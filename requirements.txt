@@ -1,0 +1,16 @@
+aiogram==3.3.0
+aiofiles==23.2.1
+aiosqlite==0.20.0
+SQLAlchemy==2.0.30
+opentele==1.15.1
+aiohttp-socks==0.8.4
+TgCrypto
+rarfile
+py7zr
+pytz
+hypercorn
+httpx
+urllib3
+telethon
+phonenumbers
+kurigram==2.1.37

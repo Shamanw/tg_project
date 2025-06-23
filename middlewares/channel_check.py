@@ -1,0 +1,50 @@
+from aiogram import BaseMiddleware
+from aiogram.enums import ChatType
+from aiogram.types import Update
+
+from database.commands.users import *
+from database.commands.bot_settings import *
+
+from keyboards.inline.misc_kb import subscribe_kb
+
+from utils.additionally_bot import *
+
+
+class ChannelCheckMiddleware(BaseMiddleware):
+    async def __call__(self, handler, event: Update, data: dict):
+        bot = data['bot']
+        message = None
+        user = None
+        chat = None
+        if event:
+            if hasattr(event, 'message') and event.message:
+                message = event.message
+                user = message.from_user
+                chat = message.chat
+            elif hasattr(event, 'callback_query') and event.callback_query:
+                message = event.callback_query.message
+                user = message.from_user
+                chat = message.chat
+            elif hasattr(event, 'edited_message') and event.edited_message:
+                message = event.edited_message
+                user = message.from_user
+                chat = message.chat
+        if user:
+            bt = await select_bot_setting()
+            if bt.channel_id and bt.channel_link:
+                usr = await select_user(user_id=user.id)
+                if chat and chat.type == ChatType.PRIVATE and message and usr and usr.role == 'drop':
+                    try:
+                        member = await BotGetChatMember(bot, chat_id=bt.channel_id, user_id=user.id)
+                        # print(member)
+                        if member and member.status not in ('member', 'administrator', 'creator'):
+                            return await MessageAnswer(
+                                message,
+                                text=f'<b>❗️ Подпишитесь на <a href="{bt.channel_link}">канал</a>, чтобы продолжить.</b>',
+                                reply_markup=subscribe_kb(bt.channel_link),
+                                disable_web_page_preview=True
+                            )
+                    except:
+                        traceback.print_exc()
+        return await handler(event, data)
+
