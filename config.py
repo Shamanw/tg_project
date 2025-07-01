@@ -1,7 +1,7 @@
 BOT_TOKEN = '7718920119:AAFMy1sjWYfkHsfeSrcKjht_lfTanPGbi7E'
 SECOND_BOT_TOKEN = '7659884337:AAGixlHgFhYwSXEse6lmpWcMFDqFnGscpgg'
 ADMIN_ID = 7197907593
-
+#1
 from pyrogram import Client
 
 phone_number_main = '380661766553'
